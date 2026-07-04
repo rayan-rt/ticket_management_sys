@@ -6,6 +6,7 @@ import jsonwebtoken from "jsonwebtoken";
 import { AuthService } from "../services/auth.service";
 import { ErrorHandler } from "../utils/errHandler";
 import { ResHandler } from "../utils/resHandler";
+import { JWTService } from "../services/jwt.service";
 // --
 
 type SignupRequestBody = {
@@ -19,8 +20,6 @@ type SigninRequestBody = {
   password: string;
 };
 
-const JWT_SECRET = String(process.env.JWT_SECRET) || "secret";
-const JWT_EXPIRE = process.env.JWT_EXPIRE || "1h";
 const tokenName = "accessToken";
 const cookieOptions = {
   httpOnly: true,
@@ -44,8 +43,8 @@ export class AuthController {
       }
 
       const payload = { id: user.id };
-      const options = { expiresIn: JWT_EXPIRE };
-      const token = jsonwebtoken.sign(payload, JWT_SECRET, options);
+      const jwtService = new JWTService();
+      const token = jwtService.sign(payload);
 
       return res
         .cookie(tokenName, token, cookieOptions)
@@ -84,8 +83,8 @@ export class AuthController {
       }
 
       const payload = { id: user.id };
-      const options = { expiresIn: JWT_EXPIRE };
-      const token = jsonwebtoken.sign(payload, JWT_SECRET, options);
+      const jwtService = new JWTService();
+      const token = jwtService.sign(payload);
 
       return res
         .cookie(tokenName, token, cookieOptions)

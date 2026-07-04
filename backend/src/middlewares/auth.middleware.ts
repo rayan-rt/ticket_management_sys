@@ -4,11 +4,9 @@ import jsonwebtoken from "jsonwebtoken";
 import type { User } from "../generated/prisma/client";
 import { AuthService } from "../services/auth.service";
 import { ErrorHandler } from "../utils/errHandler";
+import type { JwtPayloadWithId } from "../types";
+import { JWTService } from "../services/jwt.service";
 // --
-
-type JwtPayloadWithId = jsonwebtoken.JwtPayload & {
-  id?: string | number;
-};
 
 type AuthenticatedRequest = Request & {
   cookies?: Record<string, string>;
@@ -35,8 +33,10 @@ export class AuthMiddleware {
 
     let payload: JwtPayloadWithId;
 
+    const jwtService = new JWTService();
+
     try {
-      payload = jsonwebtoken.verify(token, JWT_SECRET) as JwtPayloadWithId;
+      payload = jwtService.verify(token) as JwtPayloadWithId;
     } catch (error) {
       console.error(error);
       return res
@@ -44,8 +44,7 @@ export class AuthMiddleware {
         .json(new ResHandler("Unauthorized", 401, { error }, false));
     }
 
-    const userId =
-      typeof payload.id === "string" ? Number(payload.id) : payload.id;
+    const userId = Number(payload.id);
 
     if (!userId || Number.isNaN(userId)) {
       return res
