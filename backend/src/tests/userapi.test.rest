@@ -1,0 +1,14 @@
+### Variable
+@baseURL = http://localhost:3000/api
+
+### get
+GET {{baseURL}}/ 
+
+### signup user
+POST {{baseURL}}/user/signup
+Content-Type: : application/json
+
+{
+    "email":"test@test.com",
+    "password": "password123"
+}
