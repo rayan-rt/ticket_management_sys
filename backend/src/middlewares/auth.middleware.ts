@@ -1,11 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
-import { ResHandler } from "../utils/resHandler";
-import jsonwebtoken from "jsonwebtoken";
 import type { User } from "../generated/prisma/client";
 import { AuthService } from "../services/auth.service";
-import { ErrorHandler } from "../utils/errHandler";
-import type { JwtPayloadWithId } from "../types";
 import { JWTService } from "../services/jwt.service";
+import type { JwtPayloadWithId } from "../types";
+import { ErrorHandler } from "../utils/errHandler";
+import { ResHandler } from "../utils/resHandler";
 // --
 
 type AuthenticatedRequest = Request & {
